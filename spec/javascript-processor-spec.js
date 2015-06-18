@@ -18,6 +18,16 @@ const linkForLine = function (links, lineNumber) {
 };
 
 describe('javascript-processor', function() {
+    let editor = null;
+
+    beforeEach(function() {
+      return waitsForPromise(function() {
+        return atom.workspace.open('sample.js').then(function(e) {
+          editor = e;
+        });
+      });
+    });
+
     describe('process()', function() {
         beforeEach(function() {
             const source = `
@@ -29,7 +39,8 @@ describe('javascript-processor', function() {
             let modulePath = require('some/complex/path')
             import ImportedModule from './imported_module';
             `;
-            let result = processor.process(source);
+            editor.setText(source);
+            let result = processor.process(editor);
             console.log(result);
 
             this.addMatchers({
@@ -84,10 +95,10 @@ describe('javascript-processor', function() {
         // I don't know how to write tests for this.
     });
     describe('scanForDestination()', function() {
-        let scanFor = function(source, target) {
+        let scanFor = function(editor, target) {
 
-            let [ lineNum, col ] = processor.scanForDestination(source, {});
-            let actual = source.split('\n')[lineNum]
+            let [ lineNum, col ] = processor.scanForDestination(editor, {});
+            let actual = editor.getText().split('\n')[lineNum]
                 .slice(col, col + target.length );
 
             expect(actual).toBe(target);
@@ -101,7 +112,8 @@ describe('javascript-processor', function() {
 
             module.exports = Same
             `;
-            scanFor(source, 'module.exports');
+            editor.setText(source);
+            scanFor(editor, 'module.exports');
         });
     });
 });

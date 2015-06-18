@@ -40,12 +40,12 @@ Your service needs a `scopes` property. It should be an array of scope names tha
 --------------------
 
 ```CoffeeScript
-# @param {string} source - editor text
+# @param {string} editor - editor instance
 # @returns {Object[]} - minimum requirement: a `range` property
-process(source) ->
+process(editor) ->
 ```
 
-When CodeLinks encounters a file you can scan it will call `process(source)`. See Atom's [docs for `range`](https://atom.io/docs/api/v0.186.0/Range#). The objects you pass back will be passed into your other functions. Add anything that might help your code to these objects. You don't have to resolve the full filename here, just return potential links. You probably want to store the text you found as a property.
+When CodeLinks encounters a file you can scan it will call `process(editor)`. See Atom's [docs for `range`](https://atom.io/docs/api/v0.186.0/Range#). The objects you pass back will be passed into your other functions. Add anything that might help your code to these objects. You don't have to resolve the full filename here, just return potential links. You probably want to store the text you found as a property.
 
 3. Following a link
 -------------------
@@ -67,12 +67,12 @@ This is your opportunity to resolve the full filename.
 ------------------------------------
 
 ```CoffeeScript
-# @param {string} - Source for the destination file
+# @param {Editor} - Editor for the destination file
 # @param {Object} - One of the objects returned from `process`
 # @returns {int[]|null} - [ row, column ] to move the cursor to
-scanForDestination(source, obj) ->
+scanForDestination(editor, obj) ->
 ```
 
-If you returned a path to a file and that file was opened in Atom, CodeLinks will call `scanForDestination(source, obj)`. The built in `javascript-processor` uses this to scan for `module.exports`.
+If you returned a path to a file and that file was opened in Atom, CodeLinks will call `scanForDestination(editor, obj)`. The built in `javascript-processor` uses this to scan for `module.exports`.
 
 [range]: https://atom.io/docs/api/v0.186.0/Range
